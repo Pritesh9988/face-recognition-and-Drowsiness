@@ -71,13 +71,14 @@ while True:
 # findout face locations and face encodings
     facesCurrentFrame = face_recognition.face_locations(faces)
     encodesCurrentFrame = face_recognition.face_encodings(faces, facesCurrentFrame)
-
+# compare encodings of current face with saved face in database.
     for encodeFace, faceLoc in zip(encodesCurrentFrame, facesCurrentFrame):
         matches = face_recognition.compare_faces(encodeListKnown, encodeFace)
         faceDis = face_recognition.face_distance(encodeListKnown, encodeFace)
         # print(faceDis)
         matchIndex = np.argmin(faceDis)
-
+# if encoding matches with saved face encodings then print name of image 
+# else print unknown
         if matches[matchIndex]:
             name = personNames[matchIndex].upper()
             # print(name)
@@ -95,16 +96,17 @@ while True:
             cv2.rectangle(frame, (x1, y2 - 35), (x2, y2), (0, 255, 0), cv2.FILLED)
             cv2.putText(frame, name, (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 2)   
 
-        
+# face landmark detection       
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
+# convert bgr to gray
     faces = hog_face_detector(gray)
     for face in faces:
 
         face_landmarks = dlib_facelandmark(gray, face)
         leftEye = []
         rightEye = []
-
+# left eye detection using landmarks
+# gives 6 points with (x,y) coordinates
         for n in range(36,42):
             x = face_landmarks.part(n).x
             y = face_landmarks.part(n).y
@@ -115,7 +117,8 @@ while True:
             x2 = face_landmarks.part(next_point).x
             y2 = face_landmarks.part(next_point).y
             cv2.line(frame,(x,y),(x2,y2),(0,255,0),1)
-
+# right eye detection using landmarks
+# gives 6 points with (x,y) coordinates
         for n in range(42,48):
             x = face_landmarks.part(n).x
             y = face_landmarks.part(n).y
@@ -126,10 +129,11 @@ while True:
             x2 = face_landmarks.part(next_point).x
             y2 = face_landmarks.part(next_point).y
             cv2.line(frame,(x,y),(x2,y2),(0,255,0),1)
-
+# calculate eye aspect ratio for both eyes
         left_ear = calculate_EAR(leftEye)
         right_ear = calculate_EAR(rightEye)
-
+# take average EAR
+# if EAR less than threashold value print alarm.
         EAR = (left_ear+right_ear)/2
         EAR = round(EAR,2)
         if EAR<0.20:
@@ -141,10 +145,11 @@ while True:
             print("Drowsy")
         print(EAR)
 
-        
+# Wait for a key press to exit         
     cv2.imshow('Webcam', frame)
     if cv2.waitKey(1) == 10:
         break
+# Close all windows      
 cap.release()
 cv2.destroyAllWindows()
 
