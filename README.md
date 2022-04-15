@@ -16,15 +16,21 @@ We will solve challenge of Face Recognition and Drowsiness detection by applying
 # Face Recognition steps –
 
 •	Face Detection
+
 •	Face Alignments
+
 •	Feature Extraction
+
 •	Face Recognition
 
  
 
 # Drowsiness Detection - 
 
-      Eye Aspect Ratio(EAR)
+ 
+      
+![image](https://user-images.githubusercontent.com/97669728/163541594-ffaade05-1216-448d-b4a5-c6106bfaf3d3.png)
+ 
  
 Top-left: A visualization of eye landmarks when then the eye is open. 
 
